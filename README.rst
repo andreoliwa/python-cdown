@@ -39,9 +39,9 @@ Overview
     :alt: Supported implementations
     :target: https://pypi.org/project/cdown
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/andreoliwa/python-cdown/v0.1.0.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/andreoliwa/python-cdown/v0.0.0.svg
     :alt: Commits since latest release
-    :target: https://github.com/andreoliwa/python-cdown/compare/v0.1.0...master
+    :target: https://github.com/andreoliwa/python-cdown/compare/v0.0.0...master
 
 
 
