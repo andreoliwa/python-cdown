@@ -16,8 +16,16 @@ Why does this file exist, and why not put this in __main__?
 """
 import click
 
+from cdown import CodeOwnersFile
 
-@click.command()
-@click.argument('names', nargs=-1)
-def main(names):
-    click.echo(repr(names))
+
+@click.group()
+def main():
+    """Tools for CODEOWNERS files."""
+
+
+@main.command()
+def list_owners():
+    """List owners present in the file."""
+    for owner in CodeOwnersFile().list_owners():
+        click.echo(owner)
