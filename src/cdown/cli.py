@@ -14,6 +14,8 @@ Why does this file exist, and why not put this in __main__?
 
   Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
 """
+import sys
+
 import click
 
 from cdown import CodeOwnersFile
@@ -27,5 +29,9 @@ def main():
 @main.command()
 def list_owners():
     """List owners present in the file."""
-    for owner in CodeOwnersFile().list_owners():
-        click.echo(owner)
+    try:
+        for owner in CodeOwnersFile().list_owners():
+            click.echo(owner)
+    except FileNotFoundError as err:
+        click.secho(str(err), fg="red")
+        sys.exit(1)
