@@ -5,10 +5,11 @@ from click.testing import CliRunner
 
 from cdown import CodeOwnersFile
 from cdown.cli import list_owners
+from cdown.exceptions import CodeOwnerFileNotFoundError
 
 
 def test_code_owners_file_not_found(tmp_path: Path):
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(CodeOwnerFileNotFoundError):
         CodeOwnersFile(tmp_path).find()
 
 
@@ -27,7 +28,7 @@ def test_simple_file_with_comments():  # FIXME[AA]:
 
 def test_list_owners_file_not_found():
     result = CliRunner().invoke(list_owners, [])
-    assert result.output == f"{CodeOwnersFile.NAME} not found\n"
+    assert "Error: Code owners file not found in" in result.output
     assert result.exit_code == 1
 
 

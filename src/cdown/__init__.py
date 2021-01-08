@@ -10,6 +10,8 @@ from typing import Optional
 
 from gitignore_parser import IgnoreRule
 
+from cdown.exceptions import CodeOwnerFileNotFoundError
+
 
 @dataclass
 class CodeOwnerEntry:
@@ -49,22 +51,30 @@ class CodeOwnersFile:
     NAME = "CODEOWNERS"
     POSSIBLE_DIRECTORIES = ("", "docs", ".github", ".gitlab")
 
-    def __init__(self, project_root: Path = None) -> None:
+    def __init__(self, project_root: Path = None, file_path: Path = None) -> None:
         self.entries: List[CodeOwnerEntry] = []
         self.project_root = project_root or Path.cwd()
-        self._full_path: Optional[Path] = None
+        self._full_path: Optional[Path] = file_path or None
 
     @property
     def full_path(self) -> Path:
         return self._full_path
 
     def find(self) -> CodeOwnersFile:
+        if self._full_path:
+            return self
+        all_paths = []
         for possible_dir in self.POSSIBLE_DIRECTORIES:
             path = self.project_root / possible_dir / self.NAME
             if path.exists():
                 self._full_path = path
                 return self
-        raise FileNotFoundError(f"{self.NAME} not found")
+            all_paths.append(str(path))
+
+        bullet_list = "\n- ".join(all_paths)
+        raise CodeOwnerFileNotFoundError(
+            f"Code owners file not found in:\n- {bullet_list}"
+        )
 
     @lru_cache()
     def parse(self):

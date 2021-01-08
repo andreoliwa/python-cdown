@@ -43,6 +43,7 @@ docs = ["sphinx", "sphinx-rtd-theme"]
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
+ipdb = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
