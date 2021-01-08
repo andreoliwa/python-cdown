@@ -14,10 +14,31 @@ Why does this file exist, and why not put this in __main__?
 
   Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
 """
+from pathlib import Path
+
 import click
 
+from cdown import CodeOwnersFile
 
-@click.command()
-@click.argument('names', nargs=-1)
-def main(names):
-    click.echo(repr(names))
+
+@click.group()
+@click.option(
+    "--file",
+    "-f",
+    type=click.Path(exists=True, file_okay=True, dir_okay=False, resolve_path=True),
+    help="Path to CODEOWNERS file",
+)
+def main(file):
+    """Tools for CODEOWNERS files."""
+
+
+@main.command()
+@click.pass_context
+def list_owners(ctx):
+    """List owners present in the file."""
+    file_str = None
+    if ctx.parent:
+        file_str = ctx.parent.params["file"]
+    path = Path(file_str) if file_str else None
+    for owner in CodeOwnersFile(file_path=path).list_owners():
+        click.echo(owner)
