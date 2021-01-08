@@ -14,6 +14,8 @@ Why does this file exist, and why not put this in __main__?
 
   Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
 """
+from pathlib import Path
+
 import click
 
 from cdown import CodeOwnersFile
@@ -34,6 +36,9 @@ def main(file):
 @click.pass_context
 def list_owners(ctx):
     """List owners present in the file."""
-    file = ctx.parent.params["file"] if ctx.parent else None
-    for owner in CodeOwnersFile(file_path=file).list_owners():
+    file_str = None
+    if ctx.parent:
+        file_str = ctx.parent.params["file"]
+    path = Path(file_str) if file_str else None
+    for owner in CodeOwnersFile(file_path=path).list_owners():
         click.echo(owner)

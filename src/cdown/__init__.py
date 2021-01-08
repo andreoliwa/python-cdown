@@ -9,6 +9,7 @@ from typing import List
 from typing import Optional
 
 from gitignore_parser import IgnoreRule
+from gitignore_parser import rule_from_pattern
 
 from cdown.exceptions import CodeOwnerFileNotFoundError
 
@@ -16,22 +17,8 @@ from cdown.exceptions import CodeOwnerFileNotFoundError
 @dataclass
 class CodeOwnerEntry:
     pattern: str
-    #: An owner in the format: @company/[namespace]/team
-    owner: str
-
-    _rule: IgnoreRule
-
-    @property
-    def company(self) -> str:
-        return ""  # FIXME[AA]:
-
-    @property
-    def namespace(self) -> str:
-        return ""  # FIXME[AA]:
-
-    @property
-    def team(self) -> str:
-        return ""  # FIXME[AA]:
+    owners: List[str]
+    rule: IgnoreRule
 
 
 class CodeOwnersFile:
@@ -78,8 +65,35 @@ class CodeOwnersFile:
 
     @lru_cache()
     def parse(self):
+        """Parse a CODEOWNERS file (similar to a .gitignore file).
+
+        Reusing ideas from ``gitignore_parser.parse_gitignore()``.
+        """
         self.find()
+
+        self.entries = []
+        counter = 0
+        for raw_line in reversed(self.full_path.read_text().splitlines()):
+            pieces = [piece for piece in raw_line.split(" ") if piece]
+            if len(pieces) < 2:
+                continue
+
+            pattern = pieces[0]
+            owners = pieces[1:]
+
+            counter += 1
+            rule = rule_from_pattern(
+                pattern,
+                base_path=self.full_path.parent,
+                source=(self.full_path, counter),
+            )
+            if rule:
+                self.entries.append(CodeOwnerEntry(pattern, owners, rule))
 
     def list_owners(self) -> List[str]:
         self.parse()
-        return sorted({entry.owner for entry in self.entries})
+        owners = set()
+        for entry in self.entries:
+            for owner in entry.owners:
+                owners.add(owner)
+        return sorted(owners)
