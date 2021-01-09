@@ -72,7 +72,7 @@ def github_code_owners_example(tmp_path: Path) -> Path:
         /docs/ @doctocat
         """
     )
-    return file_path
+    return tmp_path
 
 
 def test_list_owners_file_not_found():
@@ -83,7 +83,7 @@ def test_list_owners_file_not_found():
 
 def test_list_owners(github_code_owners_example):
     result = CliRunner().invoke(
-        main, ["--file", str(github_code_owners_example), "list-owners"]
+        main, ["--project", str(github_code_owners_example), "list-owners"]
     )
     assert result.output.splitlines() == [
         "@doctocat",

@@ -23,12 +23,12 @@ from cdown import CodeOwnersFile
 
 @click.group()
 @click.option(
-    "--file",
-    "-f",
-    type=click.Path(exists=True, file_okay=True, dir_okay=False, resolve_path=True),
-    help="Path to CODEOWNERS file",
+    "--project",
+    "-p",
+    type=click.Path(exists=True, dir_okay=True, file_okay=False, resolve_path=True),
+    help="Path to project root",
 )
-def main(file):
+def main(project):
     """Tools for CODEOWNERS files."""
 
 
@@ -36,9 +36,9 @@ def main(file):
 @click.pass_context
 def list_owners(ctx):
     """List owners present in the file."""
-    file_str = None
+    project = None
     if ctx.parent:
-        file_str = ctx.parent.params["file"]
-    path = Path(file_str) if file_str else None
-    for owner in CodeOwnersFile(file_path=path).list_owners():
+        project = ctx.parent.params["project"]
+    path = Path(project) if project else None
+    for owner in CodeOwnersFile(path).list_owners():
         click.echo(owner)

@@ -38,10 +38,10 @@ class CodeOwnersFile:
     NAME = "CODEOWNERS"
     POSSIBLE_DIRECTORIES = ("", "docs", ".github", ".gitlab")
 
-    def __init__(self, project_root: Path = None, file_path: Path = None) -> None:
+    def __init__(self, project_root: Path = None) -> None:
         self.entries: List[CodeOwnerEntry] = []
         self.project_root = project_root or Path.cwd()
-        self._full_path: Optional[Path] = file_path or None
+        self._full_path: Optional[Path] = None
 
     @property
     def full_path(self) -> Path:
