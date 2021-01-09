@@ -48,8 +48,6 @@ class CodeOwnersFile:
         return self._full_path
 
     def find(self) -> CodeOwnersFile:
-        if self._full_path:
-            return self
         all_paths = []
         for possible_dir in self.POSSIBLE_DIRECTORIES:
             path = self.project_root / possible_dir / self.NAME

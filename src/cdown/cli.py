@@ -34,7 +34,7 @@ def main(project):
 
 @main.command()
 @click.pass_context
-def list_owners(ctx):
+def ls_owners(ctx):
     """List owners present in the file."""
     project = None
     if ctx.parent:
