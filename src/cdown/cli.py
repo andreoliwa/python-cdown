@@ -15,6 +15,7 @@ Why does this file exist, and why not put this in __main__?
   Also see (1) from http://click.pocoo.org/5/setuptools/#setuptools-integration
 """
 from pathlib import Path
+from typing import Optional
 
 import click
 
@@ -28,17 +29,28 @@ from cdown import CodeOwnersFile
     type=click.Path(exists=True, dir_okay=True, file_okay=False, resolve_path=True),
     help="Path to project root",
 )
-def main(project):
+def code_owners_cli(project):
     """Tools for CODEOWNERS files."""
 
 
-@main.command()
-@click.pass_context
-def ls_owners(ctx):
-    """List owners present in the file."""
+def get_project(ctx: click.Context) -> Optional[Path]:
     project = None
     if ctx.parent:
         project = ctx.parent.params["project"]
-    path = Path(project) if project else None
-    for owner in CodeOwnersFile(path).list_owners():
+    return Path(project) if project else None
+
+
+@code_owners_cli.command()
+@click.pass_context
+def ls_owners(ctx):
+    """List owners alphabetically."""
+    for owner in CodeOwnersFile(get_project(ctx)).list_owners():
         click.echo(owner)
+
+
+@code_owners_cli.command()
+@click.pass_context
+def ls_files(ctx):
+    """List files and its owners."""
+    for file in CodeOwnersFile(get_project(ctx)).list_files():
+        click.echo(file)

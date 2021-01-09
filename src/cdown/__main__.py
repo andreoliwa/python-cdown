@@ -8,7 +8,7 @@ Why does this file exist, and why __main__? For more info, read:
 - https://docs.python.org/2/using/cmdline.html#cmdoption-m
 - https://docs.python.org/3/using/cmdline.html#cmdoption-m
 """
-from cdown.cli import main
+from cdown.cli import code_owners_cli
 
 if __name__ == "__main__":
-    main()
+    code_owners_cli()
