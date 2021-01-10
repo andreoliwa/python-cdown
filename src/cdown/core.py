@@ -4,6 +4,7 @@ import subprocess
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
+from typing import Iterator
 from typing import List
 from typing import Optional
 
@@ -41,6 +42,7 @@ class CodeOwnersFile:
         self.entries: List[CodeOwnerEntry] = []
         self.project_root = project_root or Path.cwd()
         self._full_path: Optional[Path] = None
+        self.longest_owner_str = 0
 
     @property
     def full_path(self) -> Path:
@@ -67,6 +69,7 @@ class CodeOwnersFile:
         self.find()
 
         self.entries = []
+        self.longest_owner_str = 0
         counter = 0
         for raw_line in reversed(self.full_path.read_text().splitlines()):
             pieces = [piece for piece in raw_line.split(" ") if piece]
@@ -77,9 +80,16 @@ class CodeOwnersFile:
             owners = pieces[1:]
 
             counter += 1
-            rule = rule_from_pattern(pattern, base_path=self.full_path.parent, source=(self.full_path, counter))
+            rule = rule_from_pattern(pattern, base_path=self.project_root, source=(self.full_path, counter))
             if rule:
+                length = len(self.format_owners(owners))
+                if self.longest_owner_str < length:
+                    self.longest_owner_str = length
                 self.entries.append(CodeOwnerEntry(pattern, owners, rule))
+
+    @staticmethod
+    def format_owners(owners: List[str]) -> str:
+        return " ".join(owners)
 
     def list_owners(self) -> List[str]:
         self.parse()
@@ -89,11 +99,26 @@ class CodeOwnersFile:
                 owners.add(owner)
         return sorted(owners)
 
-    def list_files(self):
+    def list_files(self) -> Iterator[str]:
         self.parse()
-        return self.git_ls_files()
+        for relative_path in self.git_ls_files():
+            absolute_path = self.project_root / relative_path
+            matched_entry = self.match(absolute_path)
+            if matched_entry:
+                yield f"{self.format_owners(matched_entry.owners):{self.longest_owner_str}}  {relative_path}"
 
     def git_ls_files(self) -> List[str]:
+        """Return a list of relative paths of Git files in the project root."""
         return (  # pragma: no cover
             subprocess.run(["git", "ls-files"], cwd=self.project_root, capture_output=True).stdout.decode().splitlines()
         )
+
+    def match(self, absolute_path: Path) -> Optional[CodeOwnerEntry]:
+        """Match an entry to an absolute path.
+
+        Exit on the first match: entries are reserved, later entries have higher priority.
+        """
+        for entry in self.entries:
+            if entry.rule.match(absolute_path):
+                return entry
+        return None

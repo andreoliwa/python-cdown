@@ -12,7 +12,9 @@ def github_example(tmp_path: Path) -> Path:
     Taken from:
     https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/about-code-owners#example-of-a-codeowners-file
     """
-    file_path = tmp_path / CodeOwnersFile.NAME
+    subdir = tmp_path / ".github"
+    subdir.mkdir()
+    file_path = subdir / CodeOwnersFile.NAME
     file_path.write_text(
         """
         # This is a comment.

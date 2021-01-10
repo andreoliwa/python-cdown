@@ -42,15 +42,15 @@ def get_project(ctx: click.Context) -> Optional[Path]:
 
 @code_owners_cli.command()
 @click.pass_context
-def ls_owners(ctx):
+def ls_owners(context):
     """List owners alphabetically."""
-    for owner in CodeOwnersFile(get_project(ctx)).list_owners():
+    for owner in CodeOwnersFile(get_project(context)).list_owners():
         click.echo(owner)
 
 
 @code_owners_cli.command()
 @click.pass_context
-def ls_files(ctx):
+def ls_files(context):
     """List files and its owners."""
-    for file in CodeOwnersFile(get_project(ctx)).list_files():
+    for file in CodeOwnersFile(get_project(context)).list_files():
         click.echo(file)
