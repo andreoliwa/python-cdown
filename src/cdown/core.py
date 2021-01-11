@@ -99,9 +99,22 @@ class CodeOwnersFile:
                 owners.add(owner)
         return sorted(owners)
 
-    def list_files(self) -> Iterator[str]:
+    def list_files(self, *args: str) -> Iterator[str]:
         self.parse()
+
+        filters = []
+        if args:
+            filters.extend(args)
+
         for relative_path in self.git_ls_files():
+            include = not filters
+            for part in filters:
+                if part in relative_path:
+                    include = True
+                    break
+            if not include:
+                continue
+
             absolute_path = self.project_root / relative_path
             matched_entry = self.match(absolute_path)
             if matched_entry:

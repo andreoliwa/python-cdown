@@ -49,8 +49,9 @@ def ls_owners(context):
 
 
 @code_owners_cli.command()
+@click.argument("names", nargs=-1, required=False)
 @click.pass_context
-def ls_files(context):
-    """List files and its owners."""
-    for file in CodeOwnersFile(get_project(context)).list_files():
+def ls_files(context, names):
+    """List files and its owners; input one or multiple names to filter files."""
+    for file in CodeOwnersFile(get_project(context)).list_files(*names):
         click.echo(file)
