@@ -1,3 +1,6 @@
+[tool.black]
+line-length = 120
+
 [tool.poetry]
 name = "cdown"
 version = "0.0.0"
@@ -29,7 +32,7 @@ keywords=[
 "Issue Tracker" = "https://github.com/andreoliwa/python-cdown/issues"
 
 [tool.poetry.scripts]
-cdown = "cdown.cli:main"
+cdown = "cdown.cli:code_owners_cli"
 
 [tool.poetry.dependencies]
 python = "^3.7"
