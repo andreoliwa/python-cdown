@@ -3,7 +3,7 @@ line-length = 120
 
 [tool.poetry]
 name = "cdown"
-version = "0.0.0"
+version = "0.1.0"
 description = "Tools for CODEOWNERS files"
 authors = ["W Augusto Andreoli <andreoliwa@gmail.com>"]
 license = "MIT"
@@ -55,7 +55,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.0.0"
+version = "0.1.0"
 
 # https://commitizen-tools.github.io/commitizen/bump/
 tag_format = "v$version"
