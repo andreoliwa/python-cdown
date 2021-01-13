@@ -56,4 +56,16 @@ build-backend = "poetry.core.masonry.api"
 [tool.commitizen]
 name = "cz_conventional_commits"
 version = "0.0.0"
+
+# https://commitizen-tools.github.io/commitizen/bump/
 tag_format = "v$version"
+version_files = [
+    "docs/conf.py:version",
+    "pyproject.toml:version",
+    "README.rst",
+    "src/cdown/__init__.py"
+]
+update_changelog_on_bump = true
+
+# https://commitizen-tools.github.io/commitizen/changelog/#incremental
+changelog_incremental = true
