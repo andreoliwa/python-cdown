@@ -4,7 +4,7 @@ line-length = 120
 [tool.poetry]
 name = "cdown"
 version = "0.1.0"
-description = "Tools for CODEOWNERS files"
+description = "CLI interface and Python package to parse and validate CODEOWNERS files used by GitHub and GitLab (not tested with BitBucket yet)"
 authors = ["W Augusto Andreoli <andreoliwa@gmail.com>"]
 license = "MIT"
 readme = "README.rst"
