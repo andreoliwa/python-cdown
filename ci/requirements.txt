@@ -1,4 +1,4 @@
 virtualenv==20.4.5
 pip==21.1.1
 setuptools==56.1.0
-six==1.15.0
+six==1.16.0
