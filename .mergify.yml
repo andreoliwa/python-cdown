@@ -1,7 +1,12 @@
+queue_rules:
+  - name: default
+    conditions: []  # no extra conditions needed to get merged
+
 pull_request_rules:
   - name: Automatic merge on approval
     conditions:
       - "#approved-reviews-by>=1"
     actions:
-      merge:
+      queue:
+        name: default
         method: squash
