@@ -1,6 +1,6 @@
 queue_rules:
   - name: default
-    conditions: []  # no extra conditions needed to get merged
+    merge_conditions: [] # no extra conditions needed to get merged
 
 pull_request_rules:
   - name: Automatic merge on approval
